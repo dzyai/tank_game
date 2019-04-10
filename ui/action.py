@@ -22,3 +22,10 @@ class Move(metaclass=ABCMeta):
 # 定义阻挡抽象类，其实完全可以当做是一个规范类
 class Block(metaclass=ABCMeta):
     pass
+
+
+# 定义一个排序规范类，即"草"的排序
+class Order(metaclass=ABCMeta):
+    @abstractmethod
+    def get_order(self):
+        pass

@@ -117,3 +117,20 @@ class Water(Display, Block):
 
     def display(self):
         self.surface.blit(self.image, (self.x, self.y))
+
+
+class Grass(Display,Order):
+    #抽象方法
+    def get_order(self):
+        return 100
+
+    def __init__(self, **kwargs):
+        self.x = kwargs["x"]
+        self.y = kwargs["y"]
+        self.surface = kwargs["surface"]
+        self.image = pygame.image.load("img/grass.png")
+        self.width = self.image.get_width()
+        self.height = self.image.get_height()
+
+    def display(self):
+        self.surface.blit(self.image, (self.x, self.y))

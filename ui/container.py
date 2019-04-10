@@ -18,7 +18,7 @@ class GameSurface:
         # self.views.append(self.wall1)
         # self.views.append(self.wall2)dd
         # self.views.append(self.iron)
-        file = open("map/0.map", "r", encoding="utf-8")
+        file = open("map/1.map", "r", encoding="utf-8")
         for row, line in enumerate(file):
             line = line.strip()
             for column, text in enumerate(line):
@@ -36,8 +36,14 @@ class GameSurface:
                 elif text == "水":
                     self.iron = Water(surface=surface, x=x, y=y)
                     self.views.append(self.iron)
-
+                elif text == "草":
+                    self.iron = Grass(surface=surface, x=x, y=y)
+                    self.views.append(self.iron)
         file.close()
+
+    #函数sort会根据每个元素对象的返回数值进行排序，“草”的返回值为100，其他元素均为0
+    def __sort(self, view):
+        return view.get_order() if isinstance(view, Order) else 0
 
     def graphic(self):  # 是一直执行的
         self.surface.fill((0x00, 0x00, 0x00))
@@ -63,6 +69,13 @@ class GameSurface:
                         if move.is_blocked(block):
                             # 移动的物体被阻塞的物体挡住了
                             break
+
+        # 第一种排序：对列表进行排序，排序的标准
+        # self.views.sort(key=lambda view: view.get_order() if isinstance(view, Order) else 0)#view为views中的单元素
+        # 第二种排序：使用系统函数的排序
+        # self.views = sorted(self.views,key=self.__sort)
+        #第三种排序：列表自身的排序。和第一种lambda 相类似
+        self.views.sort(key=self.__sort)
 
     def keyDown(self, key):
         # 按下事件
