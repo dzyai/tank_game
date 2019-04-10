@@ -98,12 +98,25 @@ class TankPlay(Display, Move):  # 玩家坦克对象
         next_y = self.y
         if self.direction == Direction.UP:
             next_y -= self.speed
+            #添加墙体碰撞->"上"，第二种玩家坦克越界处理
+            if next_y < 0:
+                self.bad_direction = self.direction
+                return True
         elif self.direction == Direction.DOWN:
             next_y += self.speed
+            if next_y > GAME_HEIGHT - self.height:
+                self.bad_direction = self.direction
+                return True
         elif self.direction == Direction.LEFT:
             next_x -= self.speed
+            if next_x < 0:
+                self.bad_direction = self.direction
+                return True
         elif self.direction == Direction.RIGHT:
             next_x += self.speed
+            if next_x > GAME_WIDTH - self.width:
+                self.bad_direction = self.direction
+                return True
 
         pygame_rect = pygame.Rect(next_x, next_y, self.width, self.height)
         wall_rect = pygame.Rect(view.x, view.y, view.width, view.height)
