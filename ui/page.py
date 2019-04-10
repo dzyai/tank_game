@@ -32,7 +32,7 @@ class GamePage:
         self.game_surface = GameSurface(self.gameSurface)
         self.info_surface = InfoSurface(self.infoSurface)
 
-    def graphic(self):
+    def graphic(self):#是一直执行的
         self.window.fill((0x77, 0x77, 0x77))
         self.game_surface.graphic()
         self.window.blit(self.gameSurface,(WINDOW_PADDING,WINDOW_PADDING))
