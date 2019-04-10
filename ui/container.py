@@ -1,5 +1,5 @@
 from ui.view import *
-
+from pygame.constants import *
 class GameSurface:
     def __init__(self,surface):
         self.surface = surface
@@ -39,11 +39,15 @@ class GameSurface:
         # self.wall1.show()
         # self.wall2.show()
         # self.iron.show()
-
-        #遍历显示游戏Surface页面物体
+        # 遍历显示游戏Surface页面物体
         for view in self.views:
             view.display()
-
+        #遍历检测玩家坦克与碰撞物
+        for view in self.views:
+            if isinstance(view,Wall):#如果是墙体,则进行检测，其他物体不进行检测
+                blocked = self.tankPlayer.isBlocked(view)
+                if blocked:
+                    break
     def keyDown(self,key):
         #按下事件
         pass

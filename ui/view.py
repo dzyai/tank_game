@@ -2,7 +2,6 @@ import pygame
 
 from ui.action import Display
 from ui.locals import *
-from pygame.constants import *
 
 
 class Iron(Display):#贴墙对象
@@ -22,9 +21,10 @@ class Wall(Display):#普通墙对象
         self.y = kwargs["y"]
         self.surface = kwargs["surface"]
         self.image = pygame.image.load("img/walls.gif")
+        self.width = self.image.get_width()
+        self.height = self.image.get_height()
     def display(self):
         self.surface.blit(self.image, (self.x, self.y))
-
 
 class TankPlay(Display):#玩家坦克对象
     def __init__(self, **kwargs):
@@ -41,6 +41,11 @@ class TankPlay(Display):#玩家坦克对象
         #玩家坦克速度
         self.speed = 2
 
+        self.width = self.images[0].get_width()
+        self.height = self.images[0].get_height()
+
+        self.bad_direction = Direction.NONE
+
     def display(self):
         image = None
         if self.direction == Direction.UP:
@@ -54,6 +59,9 @@ class TankPlay(Display):#玩家坦克对象
         self.surface.blit(image, (self.x, self.y))
 
     def move(self,direction):
+        if self.bad_direction == direction:
+            return
+
         #若方向与原来不一致则改变方向，不移动；否则直接移动
         if self.direction != direction:
             self.direction = direction
@@ -66,6 +74,17 @@ class TankPlay(Display):#玩家坦克对象
                 self.x -= self.speed
             elif self.direction == Direction.RIGHT:
                 self.x += self.speed
+
+    #检测是否发生碰撞,此处仅传入的是砖墙
+    def isBlocked(self,view):
+        pygame_rect = pygame.Rect(self.x, self.y, self.width, self.height)
+        wall_rect = pygame.Rect(view.x, view.y, view.width, view.height)
+        if pygame.Rect.colliderect(pygame_rect,wall_rect):
+            self.bad_direction = self.direction
+            return True
+        else:
+            self.bad_direction = Direction.NONE
+            return False
 
     def fire(self):
         pass
