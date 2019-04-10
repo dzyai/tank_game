@@ -45,9 +45,19 @@ class GameSurface:
             view.display()
 
     def keyDown(self,key):
+        #按下事件
         pass
     def keyPasseding(self,keys):
-        pass
+        #长按事件
+        if keys[K_a] or keys[K_LEFT]:
+            self.tankPlayer.move(Direction.LEFT)
+        elif keys[K_d] or keys[K_RIGHT]:
+                self.tankPlayer.move(Direction.RIGHT)
+        elif keys[K_w] or keys[K_UP]:
+                self.tankPlayer.move(Direction.UP)
+        elif keys[K_s] or keys[K_DOWN]:
+                self.tankPlayer.move(Direction.DOWN)
+
 class InfoSurface:
     def __init__(self,surface):
         self.surface = surface

@@ -2,6 +2,7 @@ import pygame
 
 from ui.action import Display
 from ui.locals import *
+from pygame.constants import *
 
 
 class Iron(Display):#贴墙对象
@@ -37,6 +38,8 @@ class TankPlay(Display):#玩家坦克对象
         ]
         self.direction = Direction.UP
         self.surface = kwargs["surface"]
+        #玩家坦克速度
+        self.speed = 2
 
     def display(self):
         image = None
@@ -50,8 +53,19 @@ class TankPlay(Display):#玩家坦克对象
             image = self.images[3]
         self.surface.blit(image, (self.x, self.y))
 
-    def move(self):
-        pass
+    def move(self,direction):
+        #若方向与原来不一致则改变方向，不移动；否则直接移动
+        if self.direction != direction:
+            self.direction = direction
+        else:
+            if self.direction == Direction.UP:
+                self.y -= self.speed
+            elif self.direction == Direction.DOWN:
+                self.y += self.speed
+            elif self.direction == Direction.LEFT:
+                self.x -= self.speed
+            elif self.direction == Direction.RIGHT:
+                self.x += self.speed
 
     def fire(self):
         pass
