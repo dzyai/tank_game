@@ -2,19 +2,21 @@
 主窗体
 """
 import sys
-import pygame
-from pygame.locals import *
-from ui.locals import *
 from ui.page import *
 
 if __name__ == '__main__':
     pygame.init()
-    window = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))
+    w = 450
+    h = 343
+    window = pygame.display.set_mode((w, h))
+    screen = pygame.Surface((WINDOW_WIDTH, WINDOW_HEIGHT))
+    # window = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))
     pygame.display.set_caption("坦克大战")
 
-    start_page = StartPage(window)
-    game_page = GamePage(window)
+    start_page = StartPage(screen)
+    game_page = GamePage(screen)
     page = None
+
     while True:
 
         current_page = gettCurrent()
@@ -23,6 +25,7 @@ if __name__ == '__main__':
         elif current_page == 1:
             page = game_page
 
+        pygame.transform.scale(screen,(w,h),window)
         #渲染窗体
         page.graphic()
         pygame.display.flip()
