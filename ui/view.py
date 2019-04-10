@@ -33,8 +33,8 @@ class Wall(Display, Block):  # 普通墙对象
 
 class TankPlay(Display, Move):  # 玩家坦克对象
     def __init__(self, **kwargs):
-        self.x = 100
-        self.y = 100
+        self.x = kwargs["x"]
+        self.y = kwargs["y"]
         self.images = [
             pygame.image.load("img/p1tankU.gif"),
             pygame.image.load("img/p1tankD.gif"),
@@ -72,13 +72,25 @@ class TankPlay(Display, Move):  # 玩家坦克对象
             self.direction = direction
         else:
             if self.direction == Direction.UP:
-                self.y -= self.speed
+                if self.y < 0:
+                    self.y = 0
+                else:
+                    self.y -= self.speed
             elif self.direction == Direction.DOWN:
-                self.y += self.speed
+                if self.y > GAME_HEIGHT-self.height:
+                    self.y = GAME_HEIGHT-self.height
+                else:
+                    self.y += self.speed
             elif self.direction == Direction.LEFT:
-                self.x -= self.speed
+                if self.x < 0:
+                    self.x = 0
+                else:
+                    self.x -= self.speed
             elif self.direction == Direction.RIGHT:
-                self.x += self.speed
+                if self.x > GAME_WIDTH-self.width:
+                    self.x = GAME_WIDTH-self.width
+                else:
+                    self.x += self.speed
 
     # 检测是否发生碰撞,此处仅传入的是砖墙
     def is_blocked(self, view):
