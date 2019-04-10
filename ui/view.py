@@ -1,5 +1,16 @@
 import pygame
 from ui.locals import *
+
+
+class Wall:
+    def __init__(self,**kwargs):
+        self.x = kwargs["x"]
+        self.y = kwargs["y"]
+        self.surface = kwargs["surface"]
+        self.image = pygame.image.load("img/walls.gif")
+    def show(self):
+        self.surface.blit(self.image,(self.x,self.y))
+
 class TankPlay:
     def __init__(self,**kwargs):
         self.x = 100
