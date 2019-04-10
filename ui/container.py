@@ -5,16 +5,34 @@ class GameSurface:
         self.surface = surface
         self.views = []
         #玩家坦克
-        self.tankPlayer = TankPlay(surface=surface)
-        #墙
-        self.wall1 = Wall(surface=surface, x=200, y=200)
-        self.wall2 = Wall(surface=surface,x=300,y=300)
-        # 铁
-        self.iron = Iron(surface=surface, x=400, y=400)
-        self.views.append(self.tankPlayer)
-        self.views.append(self.wall1)
-        self.views.append(self.wall2)
-        self.views.append(self.iron)
+        # self.tankPlayer = TankPlay(surface=surface)
+        # #墙
+        # self.wall1 = Wall(surface=surface, x=200, y=200)
+        # self.wall2 = Wall(surface=surface,x=300,y=300)
+        # # 铁
+        # self.iron = Iron(surface=surface, x=400, y=400)
+        # self.views.append(self.tankPlayer)
+        # self.views.append(self.wall1)
+        # self.views.append(self.wall2)
+        # self.views.append(self.iron)
+        file = open("map/1.map", "r", encoding="utf-8")
+        for row,line in enumerate(file):
+            line = line.strip()
+            for column,text in enumerate(line):
+                x = column * BLOCK
+                y = row * BLOCK
+                if text == "主":
+                    self.tankPlayer = TankPlay(surface=surface, x=x, y=y)
+                    self.views.append(self.tankPlayer)
+                elif text == "砖":
+                    self.wall = Wall(surface=surface, x=x, y=y)
+                    self.views.append(self.wall)
+                elif text == "铁":
+                    self.iron = Wall(surface=surface, x=x, y=y)
+                    self.views.append(self.iron)
+
+        file.close()
+
     def graphic(self):#是一直执行的
         self.surface.fill((0x00, 0x00, 0x00))
         # self.tankPlayer.display()
@@ -26,9 +44,9 @@ class GameSurface:
         for view in self.views:
             view.display()
 
-    def keyDown(self):
+    def keyDown(self,key):
         pass
-    def keyPasseding(self):
+    def keyPasseding(self,keys):
         pass
 class InfoSurface:
     def __init__(self,surface):

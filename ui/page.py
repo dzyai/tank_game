@@ -39,6 +39,6 @@ class GamePage:
         self.info_surface.graphic()
         self.window.blit(self.infoSurface,(2*WINDOW_PADDING+GAME_WIDTH, WINDOW_PADDING))
     def keyDown(self,key):
-        pass
+        self.game_surface.keyDown(key)
     def keyPasseding(self,keys):
-        pass
+        self.game_surface.keyPasseding(keys)
