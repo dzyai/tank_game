@@ -1,21 +1,24 @@
 import pygame
 
-from ui.action import Display
+from ui.action import *
 from ui.locals import *
 
 
-class Iron(Display):  # 贴墙对象
+class Iron(Display, Block):  # 贴墙对象
     def __init__(self, **kwargs):
         self.x = kwargs["x"]
         self.y = kwargs["y"]
         self.surface = kwargs["surface"]
         self.image = pygame.image.load("img/steels.gif")
 
+        self.width = self.image.get_width()
+        self.height = self.image.get_height()
+
     def display(self):
         self.surface.blit(self.image, (self.x, self.y))
 
 
-class Wall(Display):  # 普通墙对象
+class Wall(Display, Block):  # 普通墙对象
     def __init__(self, **kwargs):
         self.x = kwargs["x"]
         self.y = kwargs["y"]
@@ -28,7 +31,7 @@ class Wall(Display):  # 普通墙对象
         self.surface.blit(self.image, (self.x, self.y))
 
 
-class TankPlay(Display):  # 玩家坦克对象
+class TankPlay(Display, Move):  # 玩家坦克对象
     def __init__(self, **kwargs):
         self.x = 100
         self.y = 100
@@ -78,7 +81,7 @@ class TankPlay(Display):  # 玩家坦克对象
                 self.x += self.speed
 
     # 检测是否发生碰撞,此处仅传入的是砖墙
-    def isBlocked(self, view):
+    def is_blocked(self, view):
         next_x = self.x
         next_y = self.y
         if self.direction == Direction.UP:
@@ -101,3 +104,16 @@ class TankPlay(Display):  # 玩家坦克对象
 
     def fire(self):
         pass
+
+
+class Water(Display, Block):
+    def __init__(self, **kwargs):
+        self.x = kwargs["x"]
+        self.y = kwargs["y"]
+        self.surface = kwargs["surface"]
+        self.image = pygame.image.load("img/water.gif")
+        self.width = self.image.get_width()
+        self.height = self.image.get_height()
+
+    def display(self):
+        self.surface.blit(self.image, (self.x, self.y))
