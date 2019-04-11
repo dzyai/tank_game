@@ -42,6 +42,9 @@ class GameSurface:
                 elif text == "敌":
                     self.enemy = EnemyPlay(surface=surface, x=x, y=y)
                     self.views.append(self.enemy)
+                elif text == "堡":
+                    self.enemy = Hourse(surface=surface, x=x, y=y)
+                    self.views.append(self.enemy)
         file.close()
 
     # 函数sort会根据每个元素对象的返回数值进行排序，“草”的返回值为100，其他元素均为0

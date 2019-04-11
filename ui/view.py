@@ -4,8 +4,26 @@ import time
 from ui.action import *
 from ui.locals import *
 
+class Hourse(Display):
 
-class Iron(Display, Block):  # 贴墙对象
+    def __init__(self, **kwargs):
+        self.x = kwargs["x"]
+        self.y = kwargs["y"]
+        self.surface = kwargs["surface"]
+        self.image = pygame.image.load("img/camp.gif")
+        self.width = self.image.get_width()
+        self.height = self.image.get_height()
+
+    def display(self):
+        self.surface.blit(self.image, (self.x, self.y))
+
+class Iron(Display, Block,Beaten):  # 贴墙对象
+    def get_hp(self):
+        return self.hp
+
+    def receive_beaten(self,power):
+        self.hp += 20
+
     def __init__(self, **kwargs):
         self.x = kwargs["x"]
         self.y = kwargs["y"]
@@ -14,6 +32,7 @@ class Iron(Display, Block):  # 贴墙对象
 
         self.width = self.image.get_width()
         self.height = self.image.get_height()
+        self.hp = 66
 
     def display(self):
         self.surface.blit(self.image, (self.x, self.y))
@@ -322,12 +341,11 @@ class EnemyPlay(Display, AutoMove, Block):
         self.height = self.images[0].get_height()
         self.bad_direction = Direction.NONE
 
-        self.start_time = 0
-        self.delay_time = 0.1
+
 
         # 开发发射时间延时
-        self.__fire_start = 0
-        self.__fire_delay = 0.1
+        self.start_time = 0
+        self.delay_time = 0.5
         # 移动时间延时
         self.__move_start = 0
         self.__move_delay = 0.03
@@ -444,3 +462,5 @@ class EnemyPlay(Display, AutoMove, Block):
             x = self.x + self.height
             y = self.y + self.width / 2
         return Bullet(x=x, y=y, direction=self.direction, surface=self.surface)
+
+
