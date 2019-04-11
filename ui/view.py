@@ -77,8 +77,8 @@ class TankPlay(Display, Move):  # 玩家坦克对象
                 else:
                     self.y -= self.speed
             elif self.direction == Direction.DOWN:
-                if self.y > GAME_HEIGHT-self.height:
-                    self.y = GAME_HEIGHT-self.height
+                if self.y > GAME_HEIGHT - self.height:
+                    self.y = GAME_HEIGHT - self.height
                 else:
                     self.y += self.speed
             elif self.direction == Direction.LEFT:
@@ -87,8 +87,8 @@ class TankPlay(Display, Move):  # 玩家坦克对象
                 else:
                     self.x -= self.speed
             elif self.direction == Direction.RIGHT:
-                if self.x > GAME_WIDTH-self.width:
-                    self.x = GAME_WIDTH-self.width
+                if self.x > GAME_WIDTH - self.width:
+                    self.x = GAME_WIDTH - self.width
                 else:
                     self.x += self.speed
 
@@ -98,7 +98,7 @@ class TankPlay(Display, Move):  # 玩家坦克对象
         next_y = self.y
         if self.direction == Direction.UP:
             next_y -= self.speed
-            #添加墙体碰撞->"上"，第二种玩家坦克越界处理
+            # 添加墙体碰撞->"上"，第二种玩家坦克越界处理
             if next_y < 0:
                 self.bad_direction = self.direction
                 return True
@@ -128,7 +128,22 @@ class TankPlay(Display, Move):  # 玩家坦克对象
             return False
 
     def fire(self):
-        pass
+        # 创建子弹
+        x = 0
+        y = 0
+        if self.direction == Direction.UP:
+            x = self.x + self.width / 2
+            y = self.y
+        elif self.direction == Direction.DOWN:
+            x = self.x + self.width / 2
+            y = self.y + self.height
+        elif self.direction == Direction.LEFT:
+            x = self.x
+            y = self.y + self.width / 2
+        elif self.direction == Direction.RIGHT:
+            x = self.x + self.height
+            y = self.y + self.width / 2
+        return Bullet(x=x, y=y, direction=self.direction, surface=self.surface)
 
 
 class Water(Display, Block):
@@ -144,8 +159,8 @@ class Water(Display, Block):
         self.surface.blit(self.image, (self.x, self.y))
 
 
-class Grass(Display,Order):
-    #抽象方法
+class Grass(Display, Order):
+    # 抽象方法
     def get_order(self):
         return 100
 
@@ -156,6 +171,34 @@ class Grass(Display,Order):
         self.image = pygame.image.load("img/grass.png")
         self.width = self.image.get_width()
         self.height = self.image.get_height()
+
+    def display(self):
+        self.surface.blit(self.image, (self.x, self.y))
+
+
+class Bullet(Display):
+    def __init__(self, **kwargs):
+        self.surface = kwargs["surface"]
+        self.image = pygame.image.load("img/tankmissile.gif")
+        self.width = self.image.get_width()
+        self.height = self.image.get_height()
+        x = kwargs["x"]
+        y = kwargs["y"]
+        self.direction = kwargs["direction"]
+        self.y = y
+        self.x = x
+        if self.direction == Direction.UP:
+            self.x = x-self.width/2
+            self.y = y-self.height+5
+        if self.direction == Direction.DOWN:
+            self.x = x-self.width/2
+            self.y = y-self.height/2
+        if self.direction == Direction.LEFT:
+            self.x = x-self.width/2
+            self.y = y-self.height/2
+        if self.direction == Direction.RIGHT:
+            self.x = x-self.width/2
+            self.y = y-self.height/2
 
     def display(self):
         self.surface.blit(self.image, (self.x, self.y))

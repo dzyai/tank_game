@@ -41,7 +41,7 @@ class GameSurface:
                     self.views.append(self.iron)
         file.close()
 
-    #函数sort会根据每个元素对象的返回数值进行排序，“草”的返回值为100，其他元素均为0
+    # 函数sort会根据每个元素对象的返回数值进行排序，“草”的返回值为100，其他元素均为0
     def __sort(self, view):
         return view.get_order() if isinstance(view, Order) else 0
 
@@ -74,7 +74,7 @@ class GameSurface:
         # self.views.sort(key=lambda view: view.get_order() if isinstance(view, Order) else 0)#view为views中的单元素
         # 第二种排序：使用系统函数的排序
         # self.views = sorted(self.views,key=self.__sort)
-        #第三种排序：列表自身的排序。和第一种lambda 相类似
+        # 第三种排序：列表自身的排序。和第一种lambda 相类似
         self.views.sort(key=self.__sort)
 
     def keyDown(self, key):
@@ -85,12 +85,14 @@ class GameSurface:
         # 长按事件
         if keys[K_a] or keys[K_LEFT]:
             self.tankPlayer.move(Direction.LEFT)
-        elif keys[K_d] or keys[K_RIGHT]:
+        if keys[K_d] or keys[K_RIGHT]:
             self.tankPlayer.move(Direction.RIGHT)
-        elif keys[K_w] or keys[K_UP]:
+        if keys[K_w] or keys[K_UP]:
             self.tankPlayer.move(Direction.UP)
-        elif keys[K_s] or keys[K_DOWN]:
+        if keys[K_s] or keys[K_DOWN]:
             self.tankPlayer.move(Direction.DOWN)
+        if keys[K_RETURN] or keys[K_SPACE]:
+            self.views.append(self.tankPlayer.fire())
 
 
 class InfoSurface:

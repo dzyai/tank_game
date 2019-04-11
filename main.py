@@ -6,8 +6,8 @@ from ui.page import *
 
 if __name__ == '__main__':
     pygame.init()
-    w = 450
-    h = 343
+    w = WINDOW_WIDTH
+    h = WINDOW_HEIGHT
     window = pygame.display.set_mode((w, h))
     screen = pygame.Surface((WINDOW_WIDTH, WINDOW_HEIGHT))
     # window = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))
