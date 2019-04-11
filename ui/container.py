@@ -87,6 +87,10 @@ class GameSurface:
         for automove in self.views:
             if isinstance(automove, AutoMove):
                 automove.move()
+            if isinstance(automove, EnemyPlay):
+                enemy_fire = automove.fire()
+                if enemy_fire!=None:
+                    self.__add_view(enemy_fire)
 
         # 是否是销毁物体
         for destroy_view in list(self.views):

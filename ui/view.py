@@ -354,7 +354,7 @@ class EnemyPlay(Display, AutoMove, Block):
 
         if self.__move_time >= 60:
             self.__move_time = 0
-            # # 随机的方向
+            # 随机的方向
             self.direction = random.choice([Direction.UP, Direction.DOWN, Direction.LEFT, Direction.RIGHT])
             return
 
