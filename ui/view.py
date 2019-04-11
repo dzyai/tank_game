@@ -302,15 +302,15 @@ class Blast(Display, Destroy):
 
 
 # 敌方坦克对象
-class EnemyPlay(Display, Move):
+class EnemyPlay(Display):
     def __init__(self, **kwargs):
         self.x = kwargs["x"]
         self.y = kwargs["y"]
         self.images = [
-            pygame.image.load("img/p1tankU.gif"),
-            pygame.image.load("img/p1tankD.gif"),
-            pygame.image.load("img/p1tankL.gif"),
-            pygame.image.load("img/p1tankR.gif")
+            pygame.image.load("img/enemy1U.gif"),
+            pygame.image.load("img/enemy1D.gif"),
+            pygame.image.load("img/enemy1L.gif"),
+            pygame.image.load("img/enemy1R.gif")
         ]
         self.direction = Direction.UP
         self.surface = kwargs["surface"]
