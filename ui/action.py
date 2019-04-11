@@ -39,10 +39,13 @@ class AutoMove(Move, ABC):
     pass
 
 
-class Destroy(ABC):
+class Destroy(metaclass=ABCMeta):
     @abstractmethod
     def is_distroy(self):
         pass
+
+    def display_blast(self):
+        return None
 
 
 # 攻击者
@@ -61,6 +64,7 @@ class Attck(ABC):
         # rect_wall = pygame.Rect(beaten.x, beaten.y, beaten.width, beaten.height)
         # return pygame.Rect.colliderect(rect_self, rect_wall)
         return pygame.Rect.colliderect(self.get_rect(), beaten.get_rect())
+
 
 # 被攻击者
 class Beaten(ABC):

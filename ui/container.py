@@ -86,9 +86,12 @@ class GameSurface:
                 automove.move()
 
         # 是否是销毁物体
-        for destroy_view in self.views:
+        for destroy_view in list(self.views):
             if isinstance(destroy_view, Destroy) and destroy_view.is_distroy():
                 self.views.remove(destroy_view)
+                blast = destroy_view.display_blast()
+                if blast != None:
+                    self.__add_view(blast)
 
         #子弹与其他物体
         # for bullet in self.views:
