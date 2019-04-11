@@ -1,5 +1,6 @@
 from abc import *
 import pygame
+from ui.locals import Direction
 
 
 # 定义显示抽象类
@@ -15,7 +16,7 @@ class Display(metaclass=ABCMeta):  # 参数metaclass=ABCMeta为抽象类的固�
 # 定义移动抽象类
 class Move(metaclass=ABCMeta):
     @abstractmethod
-    def move(self):
+    def move(self, direction=Direction.NONE):
         pass
 
     @abstractmethod

@@ -1,4 +1,5 @@
-import pygame
+import random
+
 import time
 from ui.action import *
 from ui.locals import *
@@ -280,7 +281,7 @@ class Blast(Display, Destroy):
     def __init__(self, **kwargs):
 
         self.images = []
-        #添加播放图片
+        # 添加播放图片
         for i in range(1, 33):
             self.images.append(pygame.image.load("img/blast_%d.png" % i))
         self.surface = kwargs["surface"]
@@ -294,7 +295,7 @@ class Blast(Display, Destroy):
         if self.index >= len(self.images):
             return
         image = self.images[self.index]
-        self.surface.blit(image,(self.x,self.y))
+        self.surface.blit(image, (self.x, self.y))
         self.index += 1
 
     def is_distroy(self):
@@ -302,7 +303,7 @@ class Blast(Display, Destroy):
 
 
 # 敌方坦克对象
-class EnemyPlay(Display):
+class EnemyPlay(Display, AutoMove, Block):
     def __init__(self, **kwargs):
         self.x = kwargs["x"]
         self.y = kwargs["y"]
@@ -314,8 +315,8 @@ class EnemyPlay(Display):
         ]
         self.direction = Direction.UP
         self.surface = kwargs["surface"]
-        # 玩家坦克速度
-        self.speed = 1
+
+        self.speed = 3
 
         self.width = self.images[0].get_width()
         self.height = self.images[0].get_height()
@@ -323,6 +324,14 @@ class EnemyPlay(Display):
 
         self.start_time = 0
         self.delay_time = 0.1
+
+        # 开发发射时间延时
+        self.__fire_start = 0
+        self.__fire_delay = 0.1
+        # 移动时间延时
+        self.__move_start = 0
+        self.__move_delay = 0.03
+        self.__move_time = 0
 
     def display(self):
         image = None
@@ -336,42 +345,51 @@ class EnemyPlay(Display):
             image = self.images[3]
         self.surface.blit(image, (self.x, self.y))
 
-    def move(self, direction):
-        if self.bad_direction == direction:
+    def move(self, d=Direction.NONE):
+        """自动移动"""
+        now = time.time()
+        if now - self.__move_start < self.__move_delay:
+            return
+        self.__move_start = now
+
+        if self.__move_time >= 60:
+            self.__move_time = 0
+            # # 随机的方向
+            self.direction = random.choice([Direction.UP, Direction.DOWN, Direction.LEFT, Direction.RIGHT])
             return
 
-        # 若方向与原来不一致则改变方向，不移动；否则直接移动
-        if self.direction != direction:
-            self.direction = direction
-        else:
-            if self.direction == Direction.UP:
-                if self.y < 0:
-                    self.y = 0
-                else:
-                    self.y -= self.speed
-            elif self.direction == Direction.DOWN:
-                if self.y > GAME_HEIGHT - self.height:
-                    self.y = GAME_HEIGHT - self.height
-                else:
-                    self.y += self.speed
-            elif self.direction == Direction.LEFT:
-                if self.x < 0:
-                    self.x = 0
-                else:
-                    self.x -= self.speed
-            elif self.direction == Direction.RIGHT:
-                if self.x > GAME_WIDTH - self.width:
-                    self.x = GAME_WIDTH - self.width
-                else:
-                    self.x += self.speed
+        if self.direction == self.bad_direction:
+            # 随机的方向
+            self.direction = random.choice([Direction.UP, Direction.DOWN, Direction.LEFT, Direction.RIGHT])
+            return
 
-    # 检测是否发生碰撞,此处仅传入的是砖墙
+        self.__move_time += 1
+        # 方向相同
+        if self.direction == Direction.UP:
+            self.y -= self.speed
+            if self.y < 0:
+                self.y = 0
+        elif self.direction == Direction.DOWN:
+            self.y += self.speed
+            if self.y > GAME_HEIGHT - self.height:
+                self.y = GAME_HEIGHT - self.height
+        elif self.direction == Direction.LEFT:
+            self.x -= self.speed
+            if self.x < 0:
+                self.x = 0
+        elif self.direction == Direction.RIGHT:
+            self.x += self.speed
+            if self.x > GAME_WIDTH - self.width:
+                self.x = GAME_WIDTH - self.width
+
     def is_blocked(self, block):
+        # 判断坦克和墙是否碰撞
+        # 判断坦克下一步的矩形和现在的墙是否碰撞
         next_x = self.x
         next_y = self.y
+
         if self.direction == Direction.UP:
             next_y -= self.speed
-            # 添加墙体碰撞->"上"，第二种玩家坦克越界处理
             if next_y < 0:
                 self.bad_direction = self.direction
                 return True
@@ -391,12 +409,17 @@ class EnemyPlay(Display):
                 self.bad_direction = self.direction
                 return True
 
-        pygame_rect = pygame.Rect(next_x, next_y, self.width, self.height)
-        wall_rect = pygame.Rect(block.x, block.y, block.width, block.height)
-        if pygame.Rect.colliderect(pygame_rect, wall_rect):
+        # 矩形和矩形的碰撞, 当前矩形
+        rect_self = pygame.Rect(next_x, next_y, self.width, self.height)
+        rect_wall = pygame.Rect(block.x, block.y, block.width, block.height)
+
+        collide = pygame.Rect.colliderect(rect_self, rect_wall)
+        if collide:
+            # 碰撞了,当的方向是错误的方向
             self.bad_direction = self.direction
             return True
         else:
+            # 没有错误方向
             self.bad_direction = Direction.NONE
             return False
 

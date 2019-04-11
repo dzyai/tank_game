@@ -69,7 +69,7 @@ class GameSurface:
                 for block in self.views:
                     # 找出所有可阻塞移动的物体
                     if isinstance(block, Block):  # 如果是障碍物,就判断碰撞
-                        if move.is_blocked(block):
+                        if move.is_blocked(block) and move!=block:
                             '''
                             移动的物体被阻塞的物体挡住了,就break，更改错误方向后停止遍历。
                             若不加break，当遍历到其他物体时，错误方向就会被清除
