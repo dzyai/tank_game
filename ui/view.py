@@ -38,6 +38,7 @@ class Iron(Display, Block,Beaten):  # 贴墙对象
         self.surface.blit(self.image, (self.x, self.y))
 
 
+
 class Wall(Display, Block, Destroy, Beaten):  # 普通墙对象
 
     def __init__(self, **kwargs):
