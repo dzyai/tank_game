@@ -93,7 +93,7 @@ class TankPlay(Display, Move):  # 玩家坦克对象
                     self.x += self.speed
 
     # 检测是否发生碰撞,此处仅传入的是砖墙
-    def is_blocked(self, view):
+    def is_blocked(self, block):
         next_x = self.x
         next_y = self.y
         if self.direction == Direction.UP:
@@ -119,7 +119,7 @@ class TankPlay(Display, Move):  # 玩家坦克对象
                 return True
 
         pygame_rect = pygame.Rect(next_x, next_y, self.width, self.height)
-        wall_rect = pygame.Rect(view.x, view.y, view.width, view.height)
+        wall_rect = pygame.Rect(block.x, block.y, block.width, block.height)
         if pygame.Rect.colliderect(pygame_rect, wall_rect):
             self.bad_direction = self.direction
             return True
@@ -176,7 +176,8 @@ class Grass(Display, Order):
         self.surface.blit(self.image, (self.x, self.y))
 
 
-class Bullet(Display):
+class Bullet(Display, AutoMove):
+
     def __init__(self, **kwargs):
         self.surface = kwargs["surface"]
         self.image = pygame.image.load("img/tankmissile.gif")
@@ -187,18 +188,45 @@ class Bullet(Display):
         self.direction = kwargs["direction"]
         self.y = y
         self.x = x
+        self.speed = 4
         if self.direction == Direction.UP:
-            self.x = x-self.width/2
-            self.y = y-self.height+5
+            self.x = x - self.width / 2
+            self.y = y - self.height + 5
         if self.direction == Direction.DOWN:
-            self.x = x-self.width/2
-            self.y = y-self.height/2
+            self.x = x - self.width / 2
+            self.y = y - self.height / 2
         if self.direction == Direction.LEFT:
-            self.x = x-self.width/2
-            self.y = y-self.height/2
+            self.x = x - self.width / 2
+            self.y = y - self.height / 2
         if self.direction == Direction.RIGHT:
-            self.x = x-self.width/2
-            self.y = y-self.height/2
+            self.x = x - self.width / 2
+            self.y = y - self.height / 2
 
     def display(self):
         self.surface.blit(self.image, (self.x, self.y))
+
+    def move(self):
+        # 方向相同
+        if self.direction == Direction.UP:
+            self.y -= self.speed
+            if self.y < 0:
+                self.y = 0
+                # 出屏幕了，回收
+        elif self.direction == Direction.DOWN:
+            self.y += self.speed
+            if self.y > GAME_HEIGHT - self.height:
+                self.y = GAME_HEIGHT - self.height
+                # 出屏幕了，回收
+        elif self.direction == Direction.LEFT:
+            self.x -= self.speed
+            if self.x < 0:
+                self.x = 0
+                # 出屏幕了，回收
+        elif self.direction == Direction.RIGHT:
+            self.x += self.speed
+            if self.x > GAME_WIDTH - self.width:
+                self.x = GAME_WIDTH - self.width
+                # 出屏幕了，回收
+
+    def is_blocked(self, block):
+        pass

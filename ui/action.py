@@ -1,7 +1,7 @@
 from abc import *
 
 
-# 定义墙体抽象类
+# 定义显示抽象类
 class Display(metaclass=ABCMeta):  # 参数metaclass=ABCMeta为抽象类的固定写法
     @abstractmethod
     def display(self):
@@ -15,7 +15,7 @@ class Move(metaclass=ABCMeta):
         pass
 
     @abstractmethod
-    def is_blocked(self):
+    def is_blocked(self,block):
         pass
 
 
@@ -29,3 +29,7 @@ class Order(metaclass=ABCMeta):
     @abstractmethod
     def get_order(self):
         pass
+
+
+class AutoMove(Move, ABC):
+    pass

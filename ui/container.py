@@ -67,7 +67,10 @@ class GameSurface:
                     # 找出所有可阻塞移动的物体
                     if isinstance(block, Block):  # 如果是障碍物,就判断碰撞
                         if move.is_blocked(block):
-                            # 移动的物体被阻塞的物体挡住了
+                            '''
+                            移动的物体被阻塞的物体挡住了,就break，更改错误方向后停止遍历。
+                            若不加break，当遍历到其他物体时，错误方向就会被清除
+                            '''
                             break
 
         # 第一种排序：对列表进行排序，排序的标准
@@ -76,6 +79,11 @@ class GameSurface:
         # self.views = sorted(self.views,key=self.__sort)
         # 第三种排序：列表自身的排序。和第一种lambda 相类似
         self.views.sort(key=self.__sort)
+
+        #添加自动移动物体
+        for automove in self.views:
+            if isinstance(automove, AutoMove):
+                automove.move()
 
     def keyDown(self, key):
         # 按下事件
@@ -92,8 +100,11 @@ class GameSurface:
         if keys[K_s] or keys[K_DOWN]:
             self.tankPlayer.move(Direction.DOWN)
         if keys[K_RETURN] or keys[K_SPACE]:
-            self.views.append(self.tankPlayer.fire())
+            # self.views.append(self.tankPlayer.fire())#也可直接添加
+            self.__add_view(self.tankPlayer.fire())
 
+    def __add_view(self,view):
+        self.views.append(view)
 
 class InfoSurface:
     def __init__(self, surface):
