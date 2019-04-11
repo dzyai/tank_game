@@ -33,3 +33,9 @@ class Order(metaclass=ABCMeta):
 
 class AutoMove(Move, ABC):
     pass
+
+class Destroy(ABC):
+    @abstractmethod
+    def is_distroy(self):
+        pass
+    pass

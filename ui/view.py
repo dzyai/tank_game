@@ -1,5 +1,5 @@
 import pygame
-
+import time
 from ui.action import *
 from ui.locals import *
 
@@ -48,8 +48,10 @@ class TankPlay(Display, Move):  # 玩家坦克对象
 
         self.width = self.images[0].get_width()
         self.height = self.images[0].get_height()
-
         self.bad_direction = Direction.NONE
+
+        self.start_time = 0
+        self.delay_time = 0.1
 
     def display(self):
         image = None
@@ -128,6 +130,10 @@ class TankPlay(Display, Move):  # 玩家坦克对象
             return False
 
     def fire(self):
+        now = time.time()
+        if now - self.start_time < self.delay_time:
+            return  # 其实是ruturn le None
+        self.start_time = now
         # 创建子弹
         x = 0
         y = 0
@@ -176,7 +182,7 @@ class Grass(Display, Order):
         self.surface.blit(self.image, (self.x, self.y))
 
 
-class Bullet(Display, AutoMove):
+class Bullet(Display, AutoMove, Destroy):
 
     def __init__(self, **kwargs):
         self.surface = kwargs["surface"]
@@ -202,6 +208,9 @@ class Bullet(Display, AutoMove):
             self.x = x - self.width / 2
             self.y = y - self.height / 2
 
+        # 是否回收的状态
+        self.__is_destroyed = False
+
     def display(self):
         self.surface.blit(self.image, (self.x, self.y))
 
@@ -209,24 +218,27 @@ class Bullet(Display, AutoMove):
         # 方向相同
         if self.direction == Direction.UP:
             self.y -= self.speed
-            if self.y < 0:
-                self.y = 0
+            if self.y < -self.height:
                 # 出屏幕了，回收
+                self.__is_destroyed = True
         elif self.direction == Direction.DOWN:
             self.y += self.speed
-            if self.y > GAME_HEIGHT - self.height:
-                self.y = GAME_HEIGHT - self.height
+            if self.y > GAME_HEIGHT:
                 # 出屏幕了，回收
+                self.__is_destroyed = True
         elif self.direction == Direction.LEFT:
             self.x -= self.speed
-            if self.x < 0:
-                self.x = 0
+            if self.x < -self.width:
                 # 出屏幕了，回收
+                self.__is_destroyed = True
         elif self.direction == Direction.RIGHT:
             self.x += self.speed
-            if self.x > GAME_WIDTH - self.width:
-                self.x = GAME_WIDTH - self.width
+            if self.x > GAME_WIDTH:
                 # 出屏幕了，回收
+                self.__is_destroyed = True
 
     def is_blocked(self, block):
         pass
+
+    def is_distroy(self):
+        return self.__is_destroyed

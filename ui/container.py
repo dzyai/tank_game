@@ -80,10 +80,15 @@ class GameSurface:
         # 第三种排序：列表自身的排序。和第一种lambda 相类似
         self.views.sort(key=self.__sort)
 
-        #添加自动移动物体
+        # 添加自动移动物体 并 移动
         for automove in self.views:
             if isinstance(automove, AutoMove):
                 automove.move()
+
+        # 是否是销毁物体
+        for destroy_view in self.views:
+            if isinstance(destroy_view, Destroy) and destroy_view.is_distroy():
+                self.views.remove(destroy_view)
 
     def keyDown(self, key):
         # 按下事件
@@ -101,10 +106,13 @@ class GameSurface:
             self.tankPlayer.move(Direction.DOWN)
         if keys[K_RETURN] or keys[K_SPACE]:
             # self.views.append(self.tankPlayer.fire())#也可直接添加
-            self.__add_view(self.tankPlayer.fire())
+            fire = self.tankPlayer.fire()
+            if fire != None:
+                self.__add_view(fire)
 
-    def __add_view(self,view):
+    def __add_view(self, view):
         self.views.append(view)
+
 
 class InfoSurface:
     def __init__(self, surface):
