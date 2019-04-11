@@ -122,6 +122,7 @@ class GameSurface:
             if fire != None:
                 self.__add_view(fire)
 
+
     def __add_view(self, view):
         self.views.append(view)
 
