@@ -18,7 +18,8 @@ class Iron(Display, Block):  # 贴墙对象
         self.surface.blit(self.image, (self.x, self.y))
 
 
-class Wall(Display, Block):  # 普通墙对象
+class Wall(Display, Block, Destroy):  # 普通墙对象
+
     def __init__(self, **kwargs):
         self.x = kwargs["x"]
         self.y = kwargs["y"]
@@ -26,9 +27,22 @@ class Wall(Display, Block):  # 普通墙对象
         self.image = pygame.image.load("img/walls.gif")
         self.width = self.image.get_width()
         self.height = self.image.get_height()
+        self.hp = 1
+        self.is_distroyed = False
 
     def display(self):
         self.surface.blit(self.image, (self.x, self.y))
+
+    def get_hp(self):
+        return self.hp
+
+    def receive_beaten(self, power):
+        self.hp -= power
+        if self.is_distroyed <= 0:
+            self.is_distroyed = True
+
+    def is_distroy(self):
+        return self.is_distroyed
 
 
 class TankPlay(Display, Move):  # 玩家坦克对象
@@ -208,6 +222,8 @@ class Bullet(Display, AutoMove, Destroy):
             self.x = x - self.width / 2
             self.y = y - self.height / 2
 
+        self.power = 1
+
         # 是否回收的状态
         self.__is_destroyed = False
 
@@ -237,8 +253,21 @@ class Bullet(Display, AutoMove, Destroy):
                 # 出屏幕了，回收
                 self.__is_destroyed = True
 
-    def is_blocked(self, block):
-        pass
+    def get_power(self):
+        return self.power
+
+    def is_blocked(self, destroy):
+        pygame_rect = pygame.Rect(self.x, self.y, self.width, self.height)
+        destroy_rect = pygame.Rect(destroy.x, destroy.y, destroy.width, destroy.height)
+        if pygame.Rect.colliderect(pygame_rect, destroy_rect):
+            return True
+        else:
+            return False
 
     def is_distroy(self):
         return self.__is_destroyed
+
+    def kill_beaten(self, hp):
+        self.power -= hp
+        if self.power <= 0:
+            self.__is_destroyed = True

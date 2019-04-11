@@ -90,6 +90,18 @@ class GameSurface:
             if isinstance(destroy_view, Destroy) and destroy_view.is_distroy():
                 self.views.remove(destroy_view)
 
+        #子弹与其他物体
+        for bullet in self.views:
+            if isinstance(bullet, Bullet):
+                for wall in self.views:
+                    # 找出可以被销毁的物体，此处指wall墙
+                    if isinstance(wall, Wall) and bullet.is_blocked(wall):
+                            power = bullet.get_power()
+                            hp = wall.get_hp()
+                            bullet.kill_beaten(hp)
+                            wall.receive_beaten(power)
+                            break
+
     def keyDown(self, key):
         # 按下事件
         pass

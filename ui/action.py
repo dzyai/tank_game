@@ -38,4 +38,23 @@ class Destroy(ABC):
     @abstractmethod
     def is_distroy(self):
         pass
-    pass
+
+#攻击者
+class Attck(ABC):
+    @abstractmethod
+    def get_power(self):
+        pass
+
+    @abstractmethod
+    def kill_beaten(self):
+        pass
+
+#被攻击者
+class Beaten(ABC):
+    @abstractmethod
+    def get_hp(self):
+        pass
+
+    @abstractmethod
+    def receive_beaten(self):
+        pass
