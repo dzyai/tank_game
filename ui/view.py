@@ -538,14 +538,8 @@ class InfoEnemyPlay(Display):
         self.x = kwargs["x"]
         self.y = kwargs["y"]
         self.surface = kwargs["surface"]
-        # 创建字体对象: 文件，字体大小
-        self.font = pygame.font.Font("font/happy.ttf", 18)
         self.enemy_img = pygame.image.load("img/enemy1U.gif")
-        self.surplus_enemy = 20
+
     def display(self):
-        # 通过字体去渲染想写的文字
-        text_score = self.font.render("敌军坦克剩余:%d辆" % self.surplus_enemy, True, (0xff, 0xff, 0xff))
-        # 把文字放到具体的位置
-        self.surface.blit(text_score, (20, 30))
 
         self.surface.blit(self.enemy_img, (self.x, self.y))

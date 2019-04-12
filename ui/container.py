@@ -4,7 +4,8 @@ from ui.action import *
 
 
 class GameSurface:
-    def __init__(self, surface):
+    def __init__(self, surface,fu):
+        self.fu_self = fu
         self.surface = surface
         self.views = []
         # 玩家坦克
@@ -99,6 +100,9 @@ class GameSurface:
         # 是否是销毁物体
         for destroy_view in list(self.views):
             if isinstance(destroy_view, Destroy) and destroy_view.is_distroy():
+                if isinstance(destroy_view, EnemyPlay):
+                    print("我是敌军，我死了")
+                    self.fu_self.set_surplus_enemy()
                 self.views.remove(destroy_view)
                 blast = destroy_view.display_blast()
                 if blast != None:
@@ -116,7 +120,7 @@ class GameSurface:
         #                     wall.receive_beaten(power)
         #                     break
 
-        # 攻击者与被攻击者
+        # 攻击者与被攻击者，主要是修改__is_destroyed是否被销毁的参数
         for attack in self.views:
             if isinstance(attack, Attck):
                 for beaten in self.views:
@@ -125,6 +129,7 @@ class GameSurface:
                         if attack.is_attacked(beaten):
                             power = attack.get_power()
                             hp = beaten.get_hp()
+                            # 修改__is_destroyed是否被销毁的参数
                             attack.kill_beaten(hp)
                             beaten.receive_beaten(power)
                             break
@@ -154,25 +159,26 @@ class GameSurface:
 
 
 class InfoSurface:
-    def __init__(self, surface):
+    def __init__(self, surface, fu):
+        self.fu_selef = fu
+        print(str(self.fu_selef.get_surplus_enemy()))
         self.locations = []
         self.surface = surface
-        self.surplus_enemy = 20
         self.views = []
+        # 创建字体对象
+        self.font = pygame.font.Font("font/happy.ttf", 18)
+        self.enemy_img = pygame.image.load("img/enemy1U.gif")
         # 敌军坦克的起始位置
         x = 40
         y = 10
-        for i in range(1, self.surplus_enemy+1):
-
+        for i in range(1, self.fu_selef.get_surplus_enemy() + 1):
             if i % 2 == 1:
-                print("奇数："+str(i))
                 # 是奇数位于左侧，x不变，y+48
                 t_x = x
                 y += 55
                 self.info_enemy = InfoEnemyPlay(surface=surface, x=t_x, y=y)
                 self.views.append(self.info_enemy)
             else:
-                print("偶数数：" + str(i))
                 # 是偶数位于右侧,x+48,y不变
                 t_x = x
                 t_y = y
@@ -182,12 +188,12 @@ class InfoSurface:
 
     # 是一直执行的
     def graphic(self):
-
         self.surface.fill((0x80, 0x80, 0x80))
-
         for view in self.views:
             view.display()
 
+        text_score = self.font.render("敌军坦克剩余:%d辆" % self.fu_selef.get_surplus_enemy(), True, (0xff, 0xff, 0xff))
+        self.surface.blit(text_score, (20, 30))
     def keyDown(self):
         pass
 
