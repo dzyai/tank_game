@@ -51,7 +51,8 @@ class GameSurface:
     def __sort(self, view):
         return view.get_order() if isinstance(view, Order) else 0
 
-    def graphic(self):  # 是一直执行的
+    # 是一直执行的
+    def graphic(self):
         self.surface.fill((0x00, 0x00, 0x00))
         # self.tankPlayer.display()
         # self.wall1.show()
@@ -121,7 +122,7 @@ class GameSurface:
                 for beaten in self.views:
                     # 找出可以被销毁的物体，此处指wall墙
                     if isinstance(beaten, Beaten):
-                        if attack.is_attacked(beaten) :
+                        if attack.is_attacked(beaten):
                             power = attack.get_power()
                             hp = beaten.get_hp()
                             attack.kill_beaten(hp)
@@ -154,10 +155,38 @@ class GameSurface:
 
 class InfoSurface:
     def __init__(self, surface):
+        self.locations = []
         self.surface = surface
+        self.surplus_enemy = 20
+        self.views = []
+        # 敌军坦克的起始位置
+        x = 40
+        y = 10
+        for i in range(1, self.surplus_enemy+1):
 
+            if i % 2 == 1:
+                print("奇数："+str(i))
+                # 是奇数位于左侧，x不变，y+48
+                t_x = x
+                y += 55
+                self.info_enemy = InfoEnemyPlay(surface=surface, x=t_x, y=y)
+                self.views.append(self.info_enemy)
+            else:
+                print("偶数数：" + str(i))
+                # 是偶数位于右侧,x+48,y不变
+                t_x = x
+                t_y = y
+                t_x += 60
+                self.info_enemy = InfoEnemyPlay(surface=surface, x=t_x, y=t_y)
+                self.views.append(self.info_enemy)
+
+    # 是一直执行的
     def graphic(self):
-        self.surface.fill((0x16, 0x77, 0xff))
+
+        self.surface.fill((0x80, 0x80, 0x80))
+
+        for view in self.views:
+            view.display()
 
     def keyDown(self):
         pass

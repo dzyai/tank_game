@@ -5,9 +5,6 @@ from ui.action import *
 from ui.locals import *
 
 
-
-
-
 class Iron(Display, Block, Beaten):  # 贴墙对象
     def get_hp(self):
         return self.hp
@@ -161,7 +158,6 @@ class TankPlay(Display, Move):
             return False
 
     def fire(self):
-        print(self.__str__())
         now = time.time()
         if now - self.start_time < self.delay_time:
             return  # 其实是ruturn le None
@@ -318,7 +314,7 @@ class Blast(Display, Destroy):
 
 
 # 敌方坦克对象
-class EnemyPlay(Display, AutoMove, Block, Destroy,Beaten):
+class EnemyPlay(Display, AutoMove, Block, Destroy, Beaten):
 
     def get_hp(self):
         return self.hp
@@ -476,14 +472,14 @@ class EnemyPlay(Display, AutoMove, Block, Destroy,Beaten):
             x = self.x + self.height
             y = self.y + self.width / 2
 
-        print("EnemyPlay:fire()_____" + self.__str__())
-        return Bullet(x=x, y=y, direction=self.direction, surface=self.surface,flag=self.__str__())
+        return Bullet(x=x, y=y, direction=self.direction, surface=self.surface, flag=self.__str__())
+
 
 class Home(Display, Beaten, Block, Destroy):
 
     def __init__(self, **kwargs):
-        self.initX = kwargs["x"]#老鹰的位置
-        self.initY = kwargs["y"]#老鹰的位置
+        self.initX = kwargs["x"]  # 老鹰的位置
+        self.initY = kwargs["y"]  # 老鹰的位置
         self.surface = kwargs["surface"]
 
         self.x = self.initX - 25
@@ -536,3 +532,20 @@ class Home(Display, Beaten, Block, Destroy):
     def is_distroy(self):
         return self.hp <= 0
 
+
+class InfoEnemyPlay(Display):
+    def __init__(self, **kwargs):
+        self.x = kwargs["x"]
+        self.y = kwargs["y"]
+        self.surface = kwargs["surface"]
+        # 创建字体对象: 文件，字体大小
+        self.font = pygame.font.Font("font/happy.ttf", 18)
+        self.enemy_img = pygame.image.load("img/enemy1U.gif")
+        self.surplus_enemy = 20
+    def display(self):
+        # 通过字体去渲染想写的文字
+        text_score = self.font.render("敌军坦克剩余:%d辆" % self.surplus_enemy, True, (0xff, 0xff, 0xff))
+        # 把文字放到具体的位置
+        self.surface.blit(text_score, (20, 30))
+
+        self.surface.blit(self.enemy_img, (self.x, self.y))

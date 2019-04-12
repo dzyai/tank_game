@@ -1,7 +1,3 @@
-from pygame.constants import K_RETURN
-# from pygame.locals import *
-import pygame
-from ui.locals import *
 from ui.container import *
 
 current = 1
@@ -21,7 +17,7 @@ class StartPage:
         self.window = window
 
     def graphic(self):
-        self.window.fill((0xff, 0x00, 0x00))
+        self.window.fill((0x3e, 0x3e, 0xff))
 
     def keyDown(self, key):
         if key == K_RETURN:
@@ -41,7 +37,7 @@ class GamePage:
         self.info_surface = InfoSurface(self.infoSurface)
 
     def graphic(self):  # 是一直执行的
-        self.window.fill((0x77, 0x77, 0x77))
+        self.window.fill((0x50, 0x50, 0x50))
         self.game_surface.graphic()
         self.window.blit(self.gameSurface, (WINDOW_PADDING, WINDOW_PADDING))
         self.info_surface.graphic()
