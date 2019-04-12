@@ -4,7 +4,7 @@ from ui.action import *
 
 
 class GameSurface:
-    def __init__(self, surface,fu):
+    def __init__(self, surface, fu):
         self.fu_self = fu
         self.surface = surface
         self.views = []
@@ -43,13 +43,17 @@ class GameSurface:
                 elif text == "敌":
                     # self.enemy = EnemyPlay(surface=surface, x=x, y=y)
                     # self.views.append(self.enemy)
-                    #建立闪光
+                    # 建立闪光
                     self.enemy = Flash(surface=surface, x=x, y=y)
                     self.views.append(self.enemy)
                 elif text == "堡":
                     self.enemy = Home(surface=surface, x=x, y=y)
                     self.views.append(self.enemy)
         file.close()
+
+        # 建立那个傻傻的敌军坦克（掩盖bug）
+        # self.enemy = Flash(surface=surface, x=5000, y=5000, bug_tank=1)
+        # self.views.append(self.enemy)
 
     # 函数sort会根据每个元素对象的返回数值进行排序，“草”的返回值为100，其他元素均为0
     def __sort(self, view):
@@ -105,14 +109,39 @@ class GameSurface:
             if isinstance(destroy_view, Destroy) and destroy_view.is_distroy():
                 if isinstance(destroy_view, EnemyPlay):
                     print("我是敌军，啊...我死了")
-                    #设置剩余敌军数量
+                    # 设置剩余敌军数量
                     self.fu_self.set_surplus_enemy()
-                    #爆炸后还有剩余坦克时，重置敌军坦克
+                    # 爆炸后还有剩余坦克时，重置敌军坦克
                     blast = destroy_view.display_blast()
                     if blast != None:
                         self.__add_view(blast)
                     if self.fu_self.get_surplus_enemy() > 1:
-                        destroy_view.reset()
+                        # destroy_view.reset()
+                        self.views.remove(destroy_view)
+
+                        # 重置闪光出现敌军
+                        self.dispositions = []
+                        rest_x = 0
+                        rest_y = 0
+                        file = open("map/1.map", "r", encoding="utf-8")
+                        for row, line in enumerate(file):
+                            line = line.strip()
+                            for column, text in enumerate(line):
+                                x = column * BLOCK
+                                y = row * BLOCK
+                                if text == "空":
+                                    self.dispositions.append((x, y))
+                        if len(self.dispositions) > 0:
+                            pos = random.randint(0, len(self.dispositions) - 1)
+                            yuanzu = self.dispositions[pos]
+                            rest_x = yuanzu[0]
+                            rest_y = yuanzu[1]
+                        # 建立闪光
+                        self.enemy = Flash(surface=self.surface, x=rest_x, y=rest_y)
+                        self.views.append(self.enemy)
+
+                        file.close()
+
                         break
                 self.views.remove(destroy_view)
                 blast = destroy_view.display_blast()
@@ -205,6 +234,7 @@ class InfoSurface:
 
         text_score = self.font.render("敌军坦克剩余:%d辆" % self.fu_selef.get_surplus_enemy(), True, (0xff, 0xff, 0xff))
         self.surface.blit(text_score, (20, 30))
+
     def keyDown(self):
         pass
 

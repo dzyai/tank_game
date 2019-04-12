@@ -568,6 +568,17 @@ class InfoEnemyPlay(Display):
 # 闪光对象
 class Flash(Display, Destroy):
 
+    # def get_order(self):
+    #     try:
+    #         if self.bug_tank == 1:
+    #             print("转圈坦克")
+    #             return 1
+    #         else:
+    #             return 10
+    #     except Exception as e:
+    #         pass
+    #     return 10
+
     def __init__(self, **kwargs):
 
         self.images = []
@@ -581,6 +592,10 @@ class Flash(Display, Destroy):
         self.x = kwargs["x"]
         self.y = kwargs["y"]
         self.index = 0
+        # try:
+        #     self.bug_tank = kwargs["bug_tank"]
+        # except Exception as e:
+        #     pass
 
     def display(self):
         if self.index >= len(self.images):
@@ -593,6 +608,4 @@ class Flash(Display, Destroy):
         return self.index >= len(self.images)
 
     def display_blast(self):
-        x = self.x + self.width / 2
-        y = self.y + self.height / 2
-        return EnemyPlay(x=x, y=y, surface=self.surface)
+        return EnemyPlay(x=self.x, y=self.y, surface=self.surface)

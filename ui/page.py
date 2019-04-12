@@ -36,7 +36,7 @@ class GamePage:
         self.game_surface = GameSurface(self.gameSurface,self)
         self.info_surface = InfoSurface(self.infoSurface, self)
 
-        self.SURPLUS_ENEMY = 20
+        self.SURPLUS_ENEMY = 10
 
     def graphic(self):  # 是一直执行的
         self.window.fill((0x50, 0x50, 0x50))
@@ -53,7 +53,7 @@ class GamePage:
         try:
             return self.SURPLUS_ENEMY
         except Exception as e:
-            return 20
+            return 10
 
     def set_surplus_enemy(self):
         self.SURPLUS_ENEMY -= 1
