@@ -101,8 +101,14 @@ class GameSurface:
         for destroy_view in list(self.views):
             if isinstance(destroy_view, Destroy) and destroy_view.is_distroy():
                 if isinstance(destroy_view, EnemyPlay):
-                    print("我是敌军，我死了")
+                    print("我是敌军，啊...我死了")
+                    #设置剩余敌军数量
                     self.fu_self.set_surplus_enemy()
+                    #爆炸后还有剩余坦克时，重置敌军坦克
+                    blast = destroy_view.display_blast()
+                    if self.fu_self.get_surplus_enemy() > 1:
+                        destroy_view.reset()
+                        break
                 self.views.remove(destroy_view)
                 blast = destroy_view.display_blast()
                 if blast != None:

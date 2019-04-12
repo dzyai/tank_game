@@ -1,8 +1,5 @@
 from enum import Enum
 
-#敌军剩余数量
-#SURPLUS_ENEMY = 20
-
 #游戏块
 BLOCK = 50
 GAME_WIDTH = BLOCK * 13

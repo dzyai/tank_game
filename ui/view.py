@@ -333,21 +333,25 @@ class EnemyPlay(Display, AutoMove, Block, Destroy, Beaten):
         return Blast(x=x, y=y, surface=self.surface)
 
     def __init__(self, **kwargs):
+        # 开始时就有敌军
+        self.reset()
         self.hp = 1
-        self.is_distroyed = False
+        self.surface = kwargs["surface"]
         self.x = kwargs["x"]
         self.y = kwargs["y"]
+
+    def reset(self):
+        self.is_distroyed = False
+        enemy_i = random.randint(1, 3)
         self.images = [
-            pygame.image.load("img/enemy1U.gif"),
-            pygame.image.load("img/enemy1D.gif"),
-            pygame.image.load("img/enemy1L.gif"),
-            pygame.image.load("img/enemy1R.gif")
+            pygame.image.load("img/enemy%dU.gif" % enemy_i),
+            pygame.image.load("img/enemy%dD.gif" % enemy_i),
+            pygame.image.load("img/enemy%dL.gif" % enemy_i),
+            pygame.image.load("img/enemy%dR.gif" % enemy_i)
         ]
+
         self.direction = Direction.UP
-        self.surface = kwargs["surface"]
-
         self.speed = 3
-
         self.width = self.images[0].get_width()
         self.height = self.images[0].get_height()
         self.bad_direction = Direction.NONE
@@ -359,6 +363,22 @@ class EnemyPlay(Display, AutoMove, Block, Destroy, Beaten):
         self.__move_start = 0
         self.__move_delay = 0.03
         self.__move_time = 0
+        self.dispositions = []
+        # 重置时敌军随机出现
+        file = open("map/1.map", "r", encoding="utf-8")
+        for row, line in enumerate(file):
+            line = line.strip()
+            for column, text in enumerate(line):
+                x = column * BLOCK
+                y = row * BLOCK
+                if text == "空":
+                    self.dispositions.append((x, y))
+        if len(self.dispositions)>0:
+            pos = random.randint(0, len(self.dispositions))
+            yuanzu = self.dispositions[pos]
+            self.x = yuanzu[0]
+            self.y = yuanzu[1]
+        file.close()
 
     def display(self):
         image = None
@@ -541,5 +561,4 @@ class InfoEnemyPlay(Display):
         self.enemy_img = pygame.image.load("img/enemy1U.gif")
 
     def display(self):
-
         self.surface.blit(self.enemy_img, (self.x, self.y))
