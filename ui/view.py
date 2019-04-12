@@ -4,24 +4,15 @@ import time
 from ui.action import *
 from ui.locals import *
 
-class Hourse(Display):
 
-    def __init__(self, **kwargs):
-        self.x = kwargs["x"]
-        self.y = kwargs["y"]
-        self.surface = kwargs["surface"]
-        self.image = pygame.image.load("img/camp.gif")
-        self.width = self.image.get_width()
-        self.height = self.image.get_height()
 
-    def display(self):
-        self.surface.blit(self.image, (self.x, self.y))
 
-class Iron(Display, Block,Beaten):  # 贴墙对象
+
+class Iron(Display, Block, Beaten):  # 贴墙对象
     def get_hp(self):
         return self.hp
 
-    def receive_beaten(self,power):
+    def receive_beaten(self, power):
         self.hp += 20
 
     def __init__(self, **kwargs):
@@ -36,7 +27,6 @@ class Iron(Display, Block,Beaten):  # 贴墙对象
 
     def display(self):
         self.surface.blit(self.image, (self.x, self.y))
-
 
 
 class Wall(Display, Block, Destroy, Beaten):  # 普通墙对象
@@ -171,6 +161,7 @@ class TankPlay(Display, Move):
             return False
 
     def fire(self):
+        print(self.__str__())
         now = time.time()
         if now - self.start_time < self.delay_time:
             return  # 其实是ruturn le None
@@ -190,7 +181,7 @@ class TankPlay(Display, Move):
         elif self.direction == Direction.RIGHT:
             x = self.x + self.height
             y = self.y + self.width / 2
-        return Bullet(x=x, y=y, direction=self.direction, surface=self.surface)
+        return Bullet(x=x, y=y, direction=self.direction, surface=self.surface, flag=self.__str__())
 
 
 class Water(Display, Block):
@@ -226,6 +217,7 @@ class Grass(Display, Order):
 class Bullet(Display, AutoMove, Destroy, Attck):
 
     def __init__(self, **kwargs):
+        self.flag = kwargs["flag"]
         self.surface = kwargs["surface"]
         self.image = pygame.image.load("img/tankmissile.gif")
         self.width = self.image.get_width()
@@ -280,6 +272,9 @@ class Bullet(Display, AutoMove, Destroy, Attck):
                 # 出屏幕了，回收
                 self.__is_destroyed = True
 
+    def get_player_self(self):
+        return self.flag
+
     def get_power(self):
         return self.power
 
@@ -323,8 +318,27 @@ class Blast(Display, Destroy):
 
 
 # 敌方坦克对象
-class EnemyPlay(Display, AutoMove, Block):
+class EnemyPlay(Display, AutoMove, Block, Destroy,Beaten):
+
+    def get_hp(self):
+        return self.hp
+
+    def receive_beaten(self, power):
+        self.hp -= power
+        if self.hp <= 0:
+            self.is_distroyed = True
+
+    def is_distroy(self):
+        return self.is_distroyed
+
+    def display_blast(self):
+        x = self.x + self.width / 2
+        y = self.y + self.height / 2
+        return Blast(x=x, y=y, surface=self.surface)
+
     def __init__(self, **kwargs):
+        self.hp = 1
+        self.is_distroyed = False
         self.x = kwargs["x"]
         self.y = kwargs["y"]
         self.images = [
@@ -341,8 +355,6 @@ class EnemyPlay(Display, AutoMove, Block):
         self.width = self.images[0].get_width()
         self.height = self.images[0].get_height()
         self.bad_direction = Direction.NONE
-
-
 
         # 开发发射时间延时
         self.start_time = 0
@@ -443,6 +455,7 @@ class EnemyPlay(Display, AutoMove, Block):
             return False
 
     def fire(self):
+
         now = time.time()
         if now - self.start_time < self.delay_time:
             return  # 其实是ruturn le None
@@ -462,6 +475,64 @@ class EnemyPlay(Display, AutoMove, Block):
         elif self.direction == Direction.RIGHT:
             x = self.x + self.height
             y = self.y + self.width / 2
-        return Bullet(x=x, y=y, direction=self.direction, surface=self.surface)
 
+        print("EnemyPlay:fire()_____" + self.__str__())
+        return Bullet(x=x, y=y, direction=self.direction, surface=self.surface,flag=self.__str__())
+
+class Home(Display, Beaten, Block, Destroy):
+
+    def __init__(self, **kwargs):
+        self.initX = kwargs["x"]#老鹰的位置
+        self.initY = kwargs["y"]#老鹰的位置
+        self.surface = kwargs["surface"]
+
+        self.x = self.initX - 25
+        self.y = self.initY - 25
+
+        self.wall = pygame.image.load("img/wall.gif")
+        self.steel = pygame.image.load("img/steel.gif")
+        self.camp = pygame.image.load("img/camp.gif")
+
+        icon_width = 25
+        self.locations = [
+            (self.x, self.y),
+            (self.x + icon_width, self.y),
+            (self.x + icon_width * 2, self.y),
+            (self.x + icon_width * 3, self.y),
+            (self.x, self.y + icon_width),
+            (self.x, self.y + icon_width * 2),
+            (self.x + icon_width * 3, self.y + icon_width),
+            (self.x + icon_width * 3, self.y + icon_width * 2),
+        ]
+
+        self.hp = 6
+
+        self.width = self.camp.get_width() + BLOCK
+        self.height = self.camp.get_height() + icon_width
+
+    def display(self):
+        # 画8个铁
+        if self.hp >= 4:
+            for loc in self.locations:
+                self.surface.blit(self.steel, loc)
+        elif self.hp >= 2:
+            for loc in self.locations:
+                self.surface.blit(self.wall, loc)
+
+        self.surface.blit(self.camp, (self.initX, self.initY))
+
+    def get_hp(self):
+        return self.hp
+
+    def receive_beaten(self, power):
+        self.hp -= power
+
+        if self.hp < 2:
+            self.width = self.camp.get_width()
+            self.height = self.camp.get_height()
+            self.x = self.initX
+            self.y = self.initY
+
+    def is_distroy(self):
+        return self.hp <= 0
 

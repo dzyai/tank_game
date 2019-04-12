@@ -43,7 +43,7 @@ class GameSurface:
                     self.enemy = EnemyPlay(surface=surface, x=x, y=y)
                     self.views.append(self.enemy)
                 elif text == "堡":
-                    self.enemy = Hourse(surface=surface, x=x, y=y)
+                    self.enemy = Home(surface=surface, x=x, y=y)
                     self.views.append(self.enemy)
         file.close()
 
@@ -72,7 +72,7 @@ class GameSurface:
                 for block in self.views:
                     # 找出所有可阻塞移动的物体
                     if isinstance(block, Block):  # 如果是障碍物,就判断碰撞
-                        if move.is_blocked(block) and move!=block:
+                        if move.is_blocked(block) and move != block:
                             '''
                             移动的物体被阻塞的物体挡住了,就break，更改错误方向后停止遍历。
                             若不加break，当遍历到其他物体时，错误方向就会被清除
@@ -92,7 +92,7 @@ class GameSurface:
                 automove.move()
             if isinstance(automove, EnemyPlay):
                 enemy_fire = automove.fire()
-                if enemy_fire!=None:
+                if enemy_fire != None:
                     self.__add_view(enemy_fire)
 
         # 是否是销毁物体
@@ -103,7 +103,7 @@ class GameSurface:
                 if blast != None:
                     self.__add_view(blast)
 
-        #子弹与其他物体
+        # 子弹与其他物体
         # for bullet in self.views:
         #     if isinstance(bullet, Bullet):
         #         for wall in self.views:
@@ -121,7 +121,7 @@ class GameSurface:
                 for beaten in self.views:
                     # 找出可以被销毁的物体，此处指wall墙
                     if isinstance(beaten, Beaten):
-                        if attack.is_attacked(beaten):
+                        if attack.is_attacked(beaten) :
                             power = attack.get_power()
                             hp = beaten.get_hp()
                             attack.kill_beaten(hp)
@@ -147,7 +147,6 @@ class GameSurface:
             fire = self.tankPlayer.fire()
             if fire != None:
                 self.__add_view(fire)
-
 
     def __add_view(self, view):
         self.views.append(view)

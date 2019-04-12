@@ -63,8 +63,21 @@ class Attck(ABC):
         # 矩形和矩形的碰撞, 当前矩形
         # rect_self = pygame.Rect(self.x, self.y, self.width, self.height)
         # rect_wall = pygame.Rect(beaten.x, beaten.y, beaten.width, beaten.height)
-        # return pygame.Rect.colliderect(rect_self, rect_wall)
-        return pygame.Rect.colliderect(self.get_rect(), beaten.get_rect())
+        # return pygame.Rect.colliderect(self.get_rect(), beaten.get_rect())
+
+        collideed = pygame.Rect.colliderect(self.get_rect(), beaten.get_rect())
+        if collideed:
+            # print("collideed:" + self.get_player_self()+"-----------"+beaten.__str__())
+            if self.get_player_self() == beaten.__str__():
+                # print("相等了。是自己发射的子弹")
+                return False
+            else:
+                return True
+
+    # 攻击者要返回是那个物体发出攻击的（子弹是谁发的）
+    # @abstractmethod
+    # def get_player_self(self):
+    #     pass
 
 
 # 被攻击者
