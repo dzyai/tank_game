@@ -58,6 +58,8 @@ class GamePage:
     def set_surplus_enemy(self):
         self.SURPLUS_ENEMY -= 1
         self.info_surface.__init__(self.infoSurface, self)
+        if self.SURPLUS_ENEMY < 0 :
+            self.SURPLUS_ENEMY = 0
 
     def keyDown(self, key):
         self.game_surface.keyDown(key)

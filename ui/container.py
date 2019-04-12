@@ -41,7 +41,10 @@ class GameSurface:
                     self.iron = Grass(surface=surface, x=x, y=y)
                     self.views.append(self.iron)
                 elif text == "敌":
-                    self.enemy = EnemyPlay(surface=surface, x=x, y=y)
+                    # self.enemy = EnemyPlay(surface=surface, x=x, y=y)
+                    # self.views.append(self.enemy)
+                    #建立闪光
+                    self.enemy = Flash(surface=surface, x=x, y=y)
                     self.views.append(self.enemy)
                 elif text == "堡":
                     self.enemy = Home(surface=surface, x=x, y=y)
@@ -106,6 +109,8 @@ class GameSurface:
                     self.fu_self.set_surplus_enemy()
                     #爆炸后还有剩余坦克时，重置敌军坦克
                     blast = destroy_view.display_blast()
+                    if blast != None:
+                        self.__add_view(blast)
                     if self.fu_self.get_surplus_enemy() > 1:
                         destroy_view.reset()
                         break

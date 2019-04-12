@@ -373,11 +373,12 @@ class EnemyPlay(Display, AutoMove, Block, Destroy, Beaten):
                 y = row * BLOCK
                 if text == "空":
                     self.dispositions.append((x, y))
-        if len(self.dispositions)>0:
-            pos = random.randint(0, len(self.dispositions))
+        if len(self.dispositions) > 0:
+            pos = random.randint(0, len(self.dispositions) - 1)
             yuanzu = self.dispositions[pos]
             self.x = yuanzu[0]
             self.y = yuanzu[1]
+
         file.close()
 
     def display(self):
@@ -562,3 +563,36 @@ class InfoEnemyPlay(Display):
 
     def display(self):
         self.surface.blit(self.enemy_img, (self.x, self.y))
+
+
+# 闪光对象
+class Flash(Display, Destroy):
+
+    def __init__(self, **kwargs):
+
+        self.images = []
+        # 添加播放图片
+        for i in range(1, 50):
+            for i in range(1, 5):
+                self.images.append(pygame.image.load("img/born%d.gif" % i))
+        self.surface = kwargs["surface"]
+        self.width = self.images[0].get_width()
+        self.height = self.images[0].get_height()
+        self.x = kwargs["x"]
+        self.y = kwargs["y"]
+        self.index = 0
+
+    def display(self):
+        if self.index >= len(self.images):
+            return
+        image = self.images[self.index]
+        self.surface.blit(image, (self.x, self.y))
+        self.index += 1
+
+    def is_distroy(self):
+        return self.index >= len(self.images)
+
+    def display_blast(self):
+        x = self.x + self.width / 2
+        y = self.y + self.height / 2
+        return EnemyPlay(x=x, y=y, surface=self.surface)
